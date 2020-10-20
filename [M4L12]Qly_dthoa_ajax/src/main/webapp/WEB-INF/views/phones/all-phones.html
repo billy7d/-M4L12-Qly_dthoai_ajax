@@ -6,19 +6,20 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
-            var deleteLink = $("a:contains('Delete')");
-            $(deleteLink).click(function (event) {
+            // var deleteLink = $("a:contains('Delete')");
+            $('#delete').click(function (event) {
+                let idClass = $('#delete').attr("href");
                 $.ajax({
-                    url: $(event.target).attr("href"),
-                    type: "POST",
-                    beforeSend: function (xhr) {
-                        xhr.setRequestHeader("Accept", "application/json");
-                        xhr.setRequestHeader("Content-Type", "application/json");
-
-                    },
+                    url: "/smartphones/delete/" + idClass,
+                    type: "DELETE",
+                    // beforeSend: function (xhr) {
+                    //     xhr.setRequestHeader("Accept", "application/json");
+                    //     xhr.setRequestHeader("Content-Type", "application/json");
+                    //
+                    // },
                     success: function (smartphone) {
                         var respContent = "";
-                        var rowToDelete = $(event.target).closest("tr");
+                        var rowToDelete = $('#delete').closest("tr"); // == event.closest("tr")
                         rowToDelete.remove();
                         respContent += "<span class='success'>Smartphone was deleted: [";
                         respContent += smartphone.producer + " : ";
@@ -57,7 +58,7 @@
                 <td th:text="${phone.price}"></td>
                 <td>
                     <a th:href="@{/smartphones/edit/__${phone.id}__}">Edit</a><br/>
-                    <a th:href="@{/smartphones/delete/__${phone.id}__}">Delete</a><br/>
+                    <a th:href="@{/smartphones/delete/__${phone.id}__}" id="delete">Delete</a><br/>
                 </td>
             </tr>
         </th:block>
