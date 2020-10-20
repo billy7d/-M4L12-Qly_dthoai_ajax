@@ -31,17 +31,101 @@
                 event.preventDefault();
             });
         });
+
+        $(document).ready(function addPhone(){
+            $('#newSmartphoneForm').submit(function (event){
+               let producer = $('#producer').value();
+               let model = $('#model').value();
+               let price = $('#price').value();
+               let jsonObj = { producer : producer, model : model, price: price};
+
+               $.ajax({
+                  headers:{
+                      'Accept': 'application/json',
+                      'Content-Type': 'application/json'
+                  } ,
+                   type:"POST",
+                   data: JSON.stringify(jsonObj),
+                   url: "/smartphones",
+                   success: successHandler
+               });
+            });
+            event.preventDefault();
+        });
+
+        function successHandler(){
+            $.ajax({
+                type:"GET",
+                url:"/smartphones",
+                success: function (data){
+
+                    let content = ' <tr>\n' +
+                       ' <th>Producer</th>\n' +
+                        ' <th>Model</th>\n' +
+                        ' <th>Price</th>\n' +
+                        ' <th>Actions</th>\n' +
+                    '</tr>\n'
+                    for (i = 0; i<data.length;i++){
+                        content += getPhone(data[i]);
+                    }
+                    document.getElementById('phoneList').innerHTML = content;
+                }
+            });
+        }
+
+        function getPhone(phones){
+            return`<tr>
+                <td> ${phones.producer}</td>`+
+                `<td> ${phones.model}</td>`+
+                `<td> ${phones.price}</td>`+
+                `<td>
+                    <a href="${phones.id}" id="edit">Edit</a><br/>
+                    <a href="${phones.id}" id="delete">Delete</a><br/>
+                </td>`
+            </tr>`
+        }
+
     </script>
+
 </head>
+
 <body>
 <div id="container">
     <h1>All Smartphones</h1>
-    <a th:href="@{/smartphones/create}">Create</a>
+    <form id="newSmartphoneForm" th:object="${sPhone}">
+        <table>
+            <tbody>
+            <tr>
+                <td>Producer:</td>
+                <td>
+                    <select id="producer">
+                        <option value="NOKIA">Nokia</option>
+                        <option selected="selected" value="IPHONE">iPhone</option>
+                        <option value="HTC">HTC</option>
+                        <option value="SAMSUNG">Samsung</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>Model:</td>
+                <td><input th:field="*{model}" /></td>
+            </tr>
+            <tr>
+                <td>Price:</td>
+                <td><input th:field="*{price}" /></td>
+            </tr>
+            <tr>
+                <td><input type="submit" value="Create" /></td>
+                <td></td>
+            </tr>
+            </tbody>
+        </table>
+    </form>
     <div>
         <p>Here you can see a list of Smartphones:</p>
         <div id="sPhoneFromResponse"></div>
     </div>
-    <table border="1px" cellpadding="0" cellspacing="0">
+    <table border="1px" cellpadding="0" cellspacing="0" id="phoneList">
         <thead>
         <tr>
             <th>Producer</th>
@@ -67,4 +151,5 @@
     <a th:href="@{/}">Home page</a>
 </div>
 </body>
+
 </html>

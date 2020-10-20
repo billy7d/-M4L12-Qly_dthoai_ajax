@@ -16,14 +16,14 @@ public class SmartphoneController {
     @Autowired
     private SmartphoneService smartphoneService;
 
-    @RequestMapping(value = "/create", method = RequestMethod.GET)
+    @RequestMapping(value = "", method = RequestMethod.GET)
     public ModelAndView createSmartphonePage() {
-        ModelAndView mav = new ModelAndView("phones/new-phone");
+        ModelAndView mav = new ModelAndView("phones/all-phones");
         mav.addObject("sPhone", new Smartphone());
         return mav;
     }
 
-    @RequestMapping(value = "/createnewPhone", method = RequestMethod.POST,
+    @RequestMapping(value = "", method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Smartphone createSmartphone(@RequestBody Smartphone smartphone) {
